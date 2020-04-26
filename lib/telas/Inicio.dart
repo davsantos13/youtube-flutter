@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:youtube/Api.dart';
 import 'package:youtube/model/Video.dart';
+import 'package:flutter_youtube/flutter_youtube.dart';
 
 class Inicio extends StatefulWidget {
-
   String busca;
 
   Inicio(this.busca);
@@ -33,28 +33,34 @@ class _InicioState extends State<Inicio> {
           case ConnectionState.active:
           case ConnectionState.done:
             if (snapshot.hasData) {
-
-             return ListView.separated(
+              return ListView.separated(
                   itemBuilder: (context, index) {
                     List<Video> videos = snapshot.data;
                     Video v = videos[index];
 
-                    return Column(
-                      children: <Widget>[
-                        Container(
-                          height: 200,
-                          decoration: BoxDecoration(
-                              image: DecorationImage(
-                                  fit: BoxFit.cover,
-                                  image: NetworkImage(v.urlImagem)
-                              )
+                    return GestureDetector(
+                      onTap: () {
+                        FlutterYoutube.playYoutubeVideoById(
+                          apiKey: CHAVE_YOUTUBE_API, 
+                          videoId: v.id,
+                          autoPlay: true,
+                          fullScreen: true);
+                      },
+                      child: Column(
+                        children: <Widget>[
+                          Container(
+                            height: 200,
+                            decoration: BoxDecoration(
+                                image: DecorationImage(
+                                    fit: BoxFit.cover,
+                                    image: NetworkImage(v.urlImagem))),
                           ),
-                        ),
-                        ListTile(
-                          title: Text(v.titulo),
-                          subtitle: Text(v.canal),
-                        )
-                      ],
+                          ListTile(
+                            title: Text(v.titulo),
+                            subtitle: Text(v.canal),
+                          )
+                        ],
+                      ),
                     );
                   },
                   separatorBuilder: (context, index) =>
